@@ -41,20 +41,20 @@ public:
         cout << "----------------------------------------------------" << endl;
         for (const auto& user : userArray) {
             cout << "|" << setw(21) << user.getUsername() << "|" << setw(19) << user.getPassword() << "|";
-            switch (user.getStatus()) {
-                case 1:
-                    cout << setw(10) << "Administrator" << "|" << endl;
-                    break;
-                case 2:
-                    cout << setw(10) << "Staff" << "|" << endl;
-                    break;
-                case 3:
+            // switch (user.getStatus()) {
+            //     case 1:
+            //         cout << setw(10) << "Administrator" << "|" << endl;
+            //         break;
+            //     case 2:
+            //         cout << setw(10) << "Staff" << "|" << endl;
+            //         break;
+                // case 3:
                     cout << setw(10) << "Customer" << "|" << endl;
                     break;
-                default:
-                    cout << setw(10) << "Unknown" << "|" << endl;
-                    break;
-            }
+            //     default:
+            //         cout << setw(10) << "Unknown" << "|" << endl;
+            //         break;
+            // }
         }
         cout << "----------------------------------------------------" << endl;
     }
@@ -99,7 +99,7 @@ int main() {
         cin >> choice;
         switch (choice) {
             case '1':
-                Admin::addUser(lib);
+                Admin::addUser(lib);//Since addUser is a static method of the Admin class, we use the class name Admin followed by the scope resolution operator to access it
                 break;
             case '2':
                 Admin::removeUser(lib);
