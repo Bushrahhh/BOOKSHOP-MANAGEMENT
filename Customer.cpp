@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -37,20 +36,20 @@ private:
 public:
     Customer(const string& username) : username(username) {}
 
-    void buyBook(vector<Book>& books) {
+    void buyBook(Book* books[], int numBooks) {
         string title;
         cout << "Enter the title of the book you want to buy: ";
         cin >> title;
 
-        for (Book& book : books) {
-            if (book.getTitle() == title) {
+        for (int i = 0; i < numBooks; ++i) {
+            if (books[i]->getTitle() == title) {
                 int quantity;
                 cout << "Enter the quantity you want to buy: ";
                 cin >> quantity;
 
-                if (quantity <= book.getQuantity()) {
-                    double totalCost = quantity * book.getPrice();
-                    book.setQuantity(book.getQuantity() - quantity);
+                if (quantity <= books[i]->getQuantity()) {
+                    double totalCost = quantity * books[i]->getPrice();
+                    books[i]->setQuantity(books[i]->getQuantity() - quantity);
                     cout << "You bought " << quantity << " copies of " << title << " for $" << totalCost << endl;
                 } else {
                     cout << "Sorry, there are not enough copies available." << endl;
@@ -61,20 +60,20 @@ public:
         cout << "Sorry, the book with title " << title << " is not available." << endl;
     }
 
-    void refundBook(vector<Book>& books) {
+    void refundBook(Book* books[], int numBooks) {
         string title;
         cout << "Enter the title of the book you want to refund: ";
         cin >> title;
 
-        for (Book& book : books) {
-            if (book.getTitle() == title) {
+        for (int i = 0; i < numBooks; ++i) {
+            if (books[i]->getTitle() == title) {
                 int quantity;
                 cout << "Enter the quantity you want to refund: ";
                 cin >> quantity;
 
-                if (quantity <= book.getQuantity()) {
-                    double refundAmount = quantity * book.getPrice();
-                    book.setQuantity(book.getQuantity() + quantity);
+                if (quantity <= books[i]->getQuantity()) {
+                    double refundAmount = quantity * books[i]->getPrice();
+                    books[i]->setQuantity(books[i]->getQuantity() + quantity);
                     cout << "You refunded " << quantity << " copies of " << title << " for a total refund of $" << refundAmount << endl;
                 } else {
                     cout << "You can't refund more copies than you bought." << endl;
@@ -97,10 +96,12 @@ int main() {
 
     Customer customer(username);
 
-    vector<Book> books;
-    books.push_back(Book("Book1", 10.99, 5));
-    books.push_back(Book("Book2", 15.99, 3));
-    books.push_back(Book("Book3", 20.49, 7));
+    const int numBooks = 3;
+    Book* books[numBooks] = {
+        new Book("Book1", 10.99, 5),
+        new Book("Book2", 15.99, 3),
+        new Book("Book3", 20.49, 7)
+    };
 
     cout << "Welcome, " << customer.getUsername() << "!" << endl;
 
@@ -115,13 +116,17 @@ int main() {
 
         switch (choice) {
             case 1:
-                customer.buyBook(books);
+                customer.buyBook(books, numBooks);
                 break;
             case 2:
-                customer.refundBook(books);
+                customer.refundBook(books, numBooks);
                 break;
             case 3:
                 cout << "Goodbye!" << endl;
+                // Deallocate memory for books
+                for (int i = 0; i < numBooks; ++i) {
+                    delete books[i];
+                }
                 return 0;
             default:
                 cout << "Invalid choice. Please enter a number between 1 and 3." << endl;
