@@ -1,130 +1,132 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Book {
 private:
-    string isbn;
-    int number;
+    string title;
+    double price;
+    int quantity;
 
 public:
-    Book(string isbn, int number) : isbn(isbn), number(number) {}
+    Book(const string& title, double price, int quantity) : title(title), price(price), quantity(quantity) {}
 
-    string getIsbn() const {
-        return isbn;
+    const string& getTitle() const {
+        return title;
     }
 
-    int getNumber() const {
-        return number;
+    double getPrice() const {
+        return price;
     }
 
-    void setNumber(int newNumber) {
-        number = newNumber;
+    int getQuantity() const {
+        return quantity;
     }
 
-    double netPrice(int copies) const {
-        // Placeholder calculation
-        return 10.0 * copies;
+    void setQuantity(int newQuantity) {
+        quantity = newQuantity;
     }
 };
-
-class Library {
-public:
-    vector<Book> bookArray;
-};
-
-class Log {};
 
 class Customer {
 private:
-    Library lib;
-    Log rec;
-
-    bool isAllDigit(const string& str) {
-        for (char c : str) {
-            if (!isdigit(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    string username;
 
 public:
-    void buyBook() {
-        system("cls");
-        string isbn, temp;
-        cout << "Please input the ISBN number of the book that you want to buy: ";
-        cin >> isbn;
+    Customer(const string& username) : username(username) {}
 
-        for (auto& book : lib.bookArray) {
-            if (book.getIsbn() == isbn) {
-                cout << "There are " << book.getNumber() << " copies of this book. How many do you want to buy? ";
-                cin >> temp;
+    void buyBook(vector<Book>& books) {
+        string title;
+        cout << "Enter the title of the book you want to buy: ";
+        cin >> title;
 
-                if (isAllDigit(temp)) {
-                    int copies = stoi(temp);
-                    if (copies <= book.getNumber()) {
-                        book.setNumber(book.getNumber() - copies);
-                        cout << "Bought " << copies << " copies of that book successfully!" << endl;
-                        cout << "Automatic quit after 3 seconds." << endl;
-                        // Update logs and print book array
-                    } else {
-                        cout << "Not enough copies available." << endl;
-                    }
+        for (Book& book : books) {
+            if (book.getTitle() == title) {
+                int quantity;
+                cout << "Enter the quantity you want to buy: ";
+                cin >> quantity;
+
+                if (quantity <= book.getQuantity()) {
+                    double totalCost = quantity * book.getPrice();
+                    book.setQuantity(book.getQuantity() - quantity);
+                    cout << "You bought " << quantity << " copies of " << title << " for $" << totalCost << endl;
                 } else {
-                    cout << "Please input a valid number." << endl;
+                    cout << "Sorry, there are not enough copies available." << endl;
                 }
                 return;
             }
         }
-        cout << "Book not found." << endl;
+        cout << "Sorry, the book with title " << title << " is not available." << endl;
     }
 
-    void refund() {
-        // Similar logic as buyBook, but refunding instead
-    }
+    void refundBook(vector<Book>& books) {
+        string title;
+        cout << "Enter the title of the book you want to refund: ";
+        cin >> title;
 
-    void interface(const string& username) {
-        char command;
-        while (true) {
-            system("cls");
-            cout << "Welcome, " << username << "! You are a customer." << endl;
-            cout << "Please choose what you want to do by entering a number:" << endl;
-            cout << "1. Buy book" << endl;
-            cout << "2. Refund" << endl;
-            cout << "3. Exit" << endl;
-            cout << "Your choice: ";
-            cin >> command;
+        for (Book& book : books) {
+            if (book.getTitle() == title) {
+                int quantity;
+                cout << "Enter the quantity you want to refund: ";
+                cin >> quantity;
 
-            switch (command) {
-                case '1':
-                    buyBook();
-                    break;
-                case '2':
-                    refund();
-                    break;
-                case '3':
-                    cout << "Exiting..." << endl;
-                    return;
-                default:
-                    cout << "Invalid choice. Please try again." << endl;
+                if (quantity <= book.getQuantity()) {
+                    double refundAmount = quantity * book.getPrice();
+                    book.setQuantity(book.getQuantity() + quantity);
+                    cout << "You refunded " << quantity << " copies of " << title << " for a total refund of $" << refundAmount << endl;
+                } else {
+                    cout << "You can't refund more copies than you bought." << endl;
+                }
+                return;
             }
         }
+        cout << "Sorry, the book with title " << title << " is not available for refund." << endl;
+    }
+
+    const string& getUsername() const {
+        return username;
     }
 };
 
 int main() {
-    Customer customer;
     string username;
-
     cout << "Enter your username: ";
     cin >> username;
 
-    customer.interface(username);
+    Customer customer(username);
+
+    vector<Book> books;
+    books.push_back(Book("Book1", 10.99, 5));
+    books.push_back(Book("Book2", 15.99, 3));
+    books.push_back(Book("Book3", 20.49, 7));
+
+    cout << "Welcome, " << customer.getUsername() << "!" << endl;
+
+    while (true) {
+        cout << "Choose an option:" << endl;
+        cout << "1. Buy a book" << endl;
+        cout << "2. Refund a book" << endl;
+        cout << "3. Exit" << endl;
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                customer.buyBook(books);
+                break;
+            case 2:
+                customer.refundBook(books);
+                break;
+            case 3:
+                cout << "Goodbye!" << endl;
+                return 0;
+            default:
+                cout << "Invalid choice. Please enter a number between 1 and 3." << endl;
+        }
+    }
 
     return 0;
 }
-
-
