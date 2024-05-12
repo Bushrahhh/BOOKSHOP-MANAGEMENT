@@ -1,23 +1,25 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 class Book {
 private:
-    std::string name;
-    std::string isbn;
-    std::string author;
+    string name;
+    string isbn;
+    string author;
 public:
-    Book(const std::string& name, const std::string& isbn, const std::string& author)
+    Book(const string& name, const string& isbn, const string& author)
         : name(name), isbn(isbn), author(author) {}
 
-    std::string GetName() const { return name; }
-    std::string GetIsbn() const { return isbn; }
-    std::string GetAuthor() const { return author; }
+    string GetName() const { return name; }
+    string GetIsbn() const { return isbn; }
+    string GetAuthor() const { return author; }
 };
 
 class Staff {
 private:
-    std::vector<Book> books;
+    vector<Book> books;
 public:
     void AddBook(const Book& book);
     void ViewBooks();
@@ -25,47 +27,47 @@ public:
 
 void Staff::AddBook(const Book& book) {
     books.push_back(book);
-    std::cout << "Book added successfully!" << std::endl;
+    cout << "Book added successfully!" << endl;
 }
 
 void Staff::ViewBooks() {
-    std::cout << "Listing all books:" << std::endl;
+    cout << "Listing all books:" << endl;
     for (const auto& book : books) {
-        std::cout << "Name: " << book.GetName() << ", ISBN: " << book.GetIsbn() << ", Author: " << book.GetAuthor() << std::endl;
+        cout << "Name: " << book.GetName() << ", ISBN: " << book.GetIsbn() << ", Author: " << book.GetAuthor() << endl;
     }
 }
 
 int main() {
     Staff staff;
     char choice;
-    std::string name, isbn, author;
+    string name, isbn, author;
 
     do {
-        std::cout << "Menu:" << std::endl;
-        std::cout << "1. Add a book" << std::endl;
-        std::cout << "2. View all books" << std::endl;
-        std::cout << "0. Exit" << std::endl;
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        cout << "Menu:" << endl;
+        cout << "1. Add a book" << endl;
+        cout << "2. View all books" << endl;
+        cout << "0. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
         switch (choice) {
             case '1':
-                std::cout << "Enter book name: ";
-                std::cin >> name;
-                std::cout << "Enter book ISBN: ";
-                std::cin >> isbn;
-                std::cout << "Enter book author: ";
-                std::cin >> author;
+                cout << "Enter book name: ";
+                cin >> name;
+                cout << "Enter book ISBN: ";
+                cin >> isbn;
+                cout << "Enter book author: ";
+                cin >> author;
                 staff.AddBook(Book(name, isbn, author));
                 break;
             case '2':
                 staff.ViewBooks();
                 break;
             case '0':
-                std::cout << "Exiting program..." << std::endl;
+                cout << "Exiting program..." << endl;
                 break;
             default:
-                std::cout << "Invalid choice. Please try again." << std::endl;
+                cout << "Invalid choice. Please try again." << endl;
         }
     } while (choice != '0');
 
